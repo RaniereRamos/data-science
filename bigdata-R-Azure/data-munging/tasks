@@ -1,0 +1,257 @@
+# Solução Lista de Exercícios - Capítulo 5
+
+# Obs: Caso tenha problemas com a acentuação, consulte este link:
+# https://support.rstudio.com/hc/en-us/articles/200532197-Character-Encoding
+
+# Configurando o diretório de trabalho
+# Coloque entre aspas o diretório de trabalho que você está usando no seu computador
+# Não use diretórios com espaço no nome
+setwd("C:/Raniere/DSA/FCD/BigDataRAzure/Cap05")
+getwd()
+
+
+#### EXERCÍCIO 1 ----------------------------------------------------------------
+
+# Exercicio 1 - Encontre e faça a correção do erro na instrução abaixo:
+write.table(mtcars, file = "mtcars2.txt", sep = "|", col.names = N, qmethod = "double")
+
+### Apresenta a sintaxe da função write.table()
+?write.table
+
+### Correção do parâmetro col.names
+write.table(mtcars, file = "mtcars2.txt", sep = "|", col.names = NA, qmethod = "double")
+
+
+#### EXERCÍCIO 2 ----------------------------------------------------------------
+
+
+# Exercicio 2 - Encontre e faça a correção do erro na instrução abaixo:
+# Troubleshooting
+library(readr)
+df_iris <- read_csv("iris.csv", col_types = matrix(
+  Sepal.Length = col_double(1),
+  Sepal.Width = col_double(1),
+  Petal.Length = col_double(1),
+  Petal.Width = col_double(1),
+  Species = col_factor(c("setosa", "versicolor", "virginica"))
+))
+
+### Apresenta os argumentos da função read_csv
+args(read_csv)
+
+### Apresenta a documentação do pacote readr: https://readr.tidyverse.org/articles/readr.html
+
+### Correção da sintaxe
+### - Substituição da matrix() por cols()
+### - Excluão do parâmetro 1 dentro do col_double
+df_iris <- read_csv("iris.csv", col_types = cols(
+  Sepal.Length = col_double(),
+  Sepal.Width = col_double(),
+  Petal.Length = col_double(),
+  Petal.Width = col_double(),
+  Species = col_factor(c("setosa", "versicolor", "virginica"))
+  ))
+
+### Visualiza o data frame
+View(df_iris)
+
+
+#### EXERCÍCIO 3 ----------------------------------------------------------------
+
+
+# Exercício 3 - Abaixo você encontra dois histogramas criados separadamente.
+# Mas isso dificulta a comparação das distribuições. Crie um novo plot que faça a união 
+# de ambos histogramas em apenas uma área de plotagem.
+
+# Dados aleatórios
+dataset1 = rnorm(4000 , 100 , 30)     
+dataset2 = rnorm(4000 , 200 , 30) 
+
+### Visualizando os datasets
+View(dataset1)
+View(dataset2)
+
+### Carrega o pacote dplyr: A fast, consistent tool for working with data frame like objects
+library(dplyr)
+
+### Combina os datasets
+datasets <- rbind(dataset1, dataset2)
+
+### Visualizan o dataset combinado
+View(datasets)
+
+### Cria o histograma do dataset combinado
+?hist
+colors()
+hist(datasets, angle = 45, col = "blue", border ="lightcyan4", breaks = 20,
+     main = "Histograma combinado de dados aleatórios",
+     xlab = "Observações de dados aleatórios gerados com uma Distribuição Normal",
+     ylab = "Frequência")
+
+
+### Histogramas lado a lado
+par(mfrow=c(1,2))
+hist(dataset1, breaks=30 , xlim=c(0,300) , col=rgb(1,0,0,0.5) , xlab="Altura" , ylab="Peso" , main="" )
+hist(dataset2, breaks=30 , xlim=c(0,300) , col=rgb(0,0,1,0.5) , xlab="Altura" , ylab="Peso" , main="")
+
+### Sobrepõe os dois histogramas
+hist(dataset1, main = NULL, col = rgb(1,0,0,0.5), xlim = c(0,400), ylim = c(0,1000),
+     xlab = "Altura", ylab = "Peso das Plantas", main = "Distribuição")
+hist(dataset2, main = NULL, col = rgb(0,0,1,0.5), add = TRUE)
+legend("topright", legend = c("Dataset1", "Dataset2"), col = c(rgb(1,0,0,0.5),
+       rgb(rgb(0,0,1,0.5)), pt.cex = 2, pch = 15))
+
+#### EXERCÍCIO 4 ----------------------------------------------------------------
+
+# Exercício 4 - Encontre e corrija o erro no gráfico abaixo
+install.packages("plotly")
+library(plotly)
+head(iris)
+
+plot_ly(iris, 
+        x = ~Petal.Length, 
+        y = ~Petal.Width,  
+        type="scatter", 
+        mode = "markers" , 
+        color = Species , marker=list(size=20 , opacity=0.5))
+
+### Visualiza o dataset
+View(iris)
+
+### Apresenta os argumentos da função plot_ly
+args(plot_ly)
+
+### Apresenta a documentação do pacote plotly: https://plotly.com/r/reference/
+
+### Correção do parâmetro color(), adicionando "" no nome Species
+plot_ly(iris, 
+        x = ~Petal.Length, 
+        y = ~Petal.Width,  
+        type="scatter", 
+        mode = "markers" , 
+        color = ~Species , marker=list(size=20 , opacity=0.5))
+
+
+#### EXERCÍCIO 5 ----------------------------------------------------------------
+
+
+# Exercício 5 - Em anexo você encontra o arquivo exercicio5.png. Crie o gráfico que resulta nesta imagem.
+####  Cria um vetor de dados com as coordenadas das camadas
+library(plotly)
+head(volcano)
+
+### Material de referência: https://www.r-graph-gallery.com/index.html
+# 3D plot
+p = plot_ly(z = volcano, type = "surface")
+p
+
+
+#### EXERCÍCIO 6 ----------------------------------------------------------------
+
+
+# Exercício 6 - Carregue o arquivo input.json anexo a este script e imprima o conteúdo no console
+# Dica: Use o pacote rjson
+
+### Instala e carrega o pacote rjson: Converts R object into JSON objects and vice-versa
+install.packages("rjson")
+library(rjson)
+
+### Carreha o arquivo
+meu_json <- fromJSON(file = "input.json")
+
+### Verifica a classe do objeto: Lista
+class(meu_json)
+
+### Imprime o conteúdo no console
+View(meu_json)
+
+
+#### EXERCÍCIO 7 ----------------------------------------------------------------
+
+# Exercício 7 - Converta o objeto criado ao carregar o arquivo json do exercício anterior 
+# em um dataframe e imprima o conteúdo no console.
+
+### Transforma uma lista em um data frame
+meu_df <- as.data.frame(meu_json)
+
+### Verifica a classe do objeto: data frame
+class(meu_df)
+
+### Imprime o conteúdo no console
+View(meu_df)
+
+
+#### EXERCÍCIO 8 ----------------------------------------------------------------
+
+
+# Exercício 8 - Carregue o arquivo input.xml anexo a este script.
+# Dica: Use o pacote XML
+
+### Instala e carrega o pacote XML: Reading and creating XML documents
+install.packages("XML")
+library(XML)
+library(methods)
+
+### Carrega o arquivo XML em um objeto do R
+meu_xml <- xmlParse("input.xml")
+
+### Imprime o objeto 
+print(meu_xml)
+
+### Verifica a classe do objeto
+class(meu_xml)
+
+
+#### EXERCÍCIO 9 ----------------------------------------------------------------
+
+
+# Exercício 9 - Converta o objeto criado no exercício anterior em um dataframe
+### Extrai dados de um documento XML e converte em um data frame
+xml_to_df <- xmlToDataFrame(meu_xml, 
+                            colClasses = NULL,
+                            homogeneous = NA, collectNames = TRUE,
+                            stringsAsFactors = default.stringsAsFactors())
+
+### Verifica a classe do novo objeto
+class(xml_to_df)
+
+### Visualiza o conteúdo do data frame
+View(xml_to_df)
+
+
+#### EXERCÍCIO 10 ----------------------------------------------------------------
+
+# Exercício 10 - Carregue o arquivo input.csv em anexo e então responda às seguintes perguntas:
+### Carregando o pacote readr: provide a fast and friendly way to read rectangular data
+library(readr)
+
+### Carrega o arquivo input.csv
+myfile <- read_csv("input.csv")
+
+# Pergunta 1 - Quantas linhas e quantas colunas tem o objeto resultante em R?
+dim(myfile)
+
+## Resposta: São 8 linhas e 5 colunas
+
+# Pergunta 2 - Qual o maior salário?
+View(myfile)
+maior_salario <- max(myfile$salary)
+
+## Resposta: O maior salário é US$ 843.25
+
+# Pergunta 3 - Imprima no console o registro da pessoa com o maior salário.
+library(dplyr)
+nome_maio_salario <- subset(myfile, salary == max(salary))
+print(nome_maio_salario)
+
+# Pergunta 4 - Imprima no console todas as pessoas que trabalham no departamento de IT.
+IT_people <- myfile %>%
+  filter(dept == "IT")
+
+View(IT_people)
+
+# Pergunta 5 - Imprima no console as pessoas do departamento de IT com salário superior a 600. 
+IT_people_salary <- myfile %>%
+  filter(dept == "IT" & salary > 600)
+
+View(IT_people_salary)
