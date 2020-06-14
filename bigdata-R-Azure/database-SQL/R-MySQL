@@ -82,3 +82,4 @@ dados2 <- con2 %>%
 head(dados2)
 
 # ==> Para outros bancos de dados, use RODBC
+
