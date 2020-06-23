@@ -1,0 +1,18 @@
+# Instalando MySQL 8 no Ubuntu 18.04
+
+wget https://dev.mysql.com/get/mysql-apt-config_0.8.12-1_all.deb
+
+sudo dpkg -i mysql-apt-config_0.8.12-1_all.deb
+
+sudo apt update
+
+sudo apt install mysql-server mysql-client
+
+sudo systemctl status mysql.service
+
+sudo mysql_secure_installation
+
+sudo mysql -u root -p
+
+sudo apt-get install mysql-workbench
+
